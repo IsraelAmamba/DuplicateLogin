@@ -26,8 +26,13 @@ namespace DuplicateLogin.Services
             _loginHelper = loginHelper;
         }
 
+        /*
+         * A middleware is used because each http request that passes through the Session Middleware resets the session time
+         * https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-3.1
+         */
         public async Task Invoke(HttpContext context)
         {
+            //The CheckSingleLogin called in here would refresh the user time in the memory cache provided the user is logged in
             _loginHelper.CheckSingleLogin(context);
 
             await _next.Invoke(context);
